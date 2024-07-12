@@ -1,31 +1,22 @@
 let box = document.querySelectorAll("button");
 
-let marker = ""; //x,
+let marker = "O";
+
+const styles = {
+  O: { color: "brown", fontSize: "40px" },
+  X: { color: "white", fontSize: "40px" },
+};
 
 box.forEach((button) => {
   const handler = () => {
-    if (marker === "") {
-      button.style.color = "brown";
-      button.style.fontSize = "40px";
+    const nextMarker = marker === "O" ? "X" : "O";
+    const { color, fontSize } = styles[marker];
 
-      marker = button.innerText = "X";
-      console.log(marker);
-    } else if (marker === "O") {
-      button.style.color = "brown";
-      button.style.fontSize = "40px";
-
-      marker = button.innerText = "X";
-      console.log(marker);
-    } else if (marker === "X") {
-      button.style.color = "white";
-      button.style.fontSize = "40px";
-
-      marker = button.innerText = "O";
-      console.log(marker);
-    }
+    button.style.color = color;
+    button.style.fontSize = fontSize;
+    marker = button.innerText = nextMarker;
+    console.log(marker);
   };
 
-  button.addEventListener("click", handler);
-
-  // button.removeEventListener("click", handler);
+  button.addEventListener("click", handler, { once: true });
 });
