@@ -1,46 +1,10 @@
 let box = document.querySelectorAll("button");
 let mainBox = document.querySelector(".main-box");
-// console.dir(mainBox);
 
-let boxCount = 0;
 let marker = "O";
 let index;
 let storeXPatterns = [];
 let storeOPatterns = [];
-
-const styles = {
-  O: { color: "brown", fontSize: "40px" },
-  X: { color: "white", fontSize: "40px" },
-};
-
-box.forEach((button) => {
-  boxCount += 1;
-  const handler = () => {
-    const nextMarker = marker === "O" ? "X" : "O";
-    const { color, fontSize } = styles[marker];
-
-    button.style.color = color;
-    button.style.fontSize = fontSize;
-    marker = button.innerText = nextMarker;
-  };
-  // console.log(boxCount);
-  button.addEventListener("click", handler, { once: true });
-});
-
-const buttonIndexHandler = (e) => {
-  const clickedButton = e.target;
-  const children = Array.from(mainBox.children);
-  index = children.indexOf(clickedButton);
-  console.log("Clicked index:", index, marker);
-  if (marker === "X") {
-    storeXPatterns.push(index);
-    console.log("For X:", storeXPatterns);
-  } else {
-    storeOPatterns.push(index);
-    console.log("For O:", storeOPatterns);
-  }
-};
-mainBox.addEventListener("click", buttonIndexHandler);
 
 const winningPatterns = [
   [0, 1, 2],
@@ -53,25 +17,83 @@ const winningPatterns = [
   [2, 4, 6],
 ];
 
-let random = [0, 2, 3, 7, 1];
+const styles = {
+  O: { color: "brown", fontSize: "40px" },
+  X: { color: "white", fontSize: "40px" },
+};
 
-for (let i of winningPatterns) {
-  let eachWinningPattern = i;
-  console.log(eachWinningPattern);
+// Marker Change:
+box.forEach((button) => {
+  const handler = () => {
+    const nextMarker = marker === "O" ? "X" : "O";
+    const { color, fontSize } = styles[marker];
 
-  const filtered = (x) => {
-    for (let j of eachWinningPattern) {
-      if (x === j) {
-        return true;
+    button.style.color = color;
+    button.style.fontSize = fontSize;
+    marker = button.innerText = nextMarker;
+  };
+  button.addEventListener("click", handler, { once: true });
+});
+
+// Index of Clicked Button:
+box.forEach((button) => {
+  const buttonIndexHandler = (e) => {
+    const clickedButton = e.target;
+    const children = Array.from(mainBox.children);
+    index = children.indexOf(clickedButton);
+    if (marker === "X") {
+      let result = storeXPatterns.includes(index);
+      if (result !== true) {
+        storeXPatterns.push(index);
+      }
+      console.log("X Patterns:", storeXPatterns);
+    } else {
+      let result = storeOPatterns.includes(index);
+      if (result !== true) {
+        storeOPatterns.push(index);
+      }
+      console.log("O Patterns:", storeOPatterns);
+    }
+  };
+  button.addEventListener("click", buttonIndexHandler, { once: true });
+});
+
+// Winner Check:
+box.forEach((button) => {
+  const winnerCheck = () => {
+    // X Winner Check:
+    if (storeXPatterns.length >= 2) {
+      for (let eachWinningPattern of winningPatterns) {
+        let winnerX = [];
+
+        for (let i of storeXPatterns) {
+          let result = eachWinningPattern.includes(i);
+          if (result === true) {
+            winnerX.push(result);
+          }
+        }
+        if (winnerX.length >= 3) {
+          console.log("X Won..!");
+        }
+      }
+    }
+
+    // O Winner Check:
+    if (storeOPatterns.length >= 2) {
+      for (let eachWinningPattern of winningPatterns) {
+        let winnerO = [];
+
+        for (let i of storeOPatterns) {
+          let result = eachWinningPattern.includes(i);
+          if (result === true) {
+            winnerO.push(result);
+          }
+        }
+        if (winnerO.length >= 3) {
+          console.log("O Won..!");
+        }
       }
     }
   };
-  // console.log(storeXPatterns.filter(filtered));
-  // console.log(storeOPatterns.filter(filtered));
-  const result = random.filter(filtered);
-  if (result.length > 2) {
-    console.log(result);
-  }
-}
-
-// use loop and include method. [4, 3, 2, 6, 8]
+  button.addEventListener("click", winnerCheck, { once: true });
+});
